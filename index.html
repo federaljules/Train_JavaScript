@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Train</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css">
+    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css"/>
+    <link rel="stylesheet" href="EasyAutocomplete-1.3.5/easy-autocomplete.themes.min.css"> 
+    <link rel="stylesheet" href="EasyAutocomplete-1.3.5/easy-autocomplete.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="external/jquery/jquery.js"></script>
+    <script src="jquery-ui.min.js"></script>
+    <script src="EasyAutocomplete-1.3.5/jquery.easy-autocomplete.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+    integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+ integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+ crossorigin=""></script>
+    
+</head>
+<body>
+        
+    <div id="container">
+            
+        
+            
+            <div id="info"><br>
+                <h3>JUNAPYSÄKKIEN TIEDOT</h3><br>
+                <input type="text" placeholder="Etsi pysäkkiä" id="autocomplete"><br>
+                <button type="button" class="hideList btn btn-outline-light">Näytä kaikki pysäkit</button>
+                <br><br>
+                <!-- <p class="hideList">Pysäkit: </p> -->
+                <ul id="statList"></ul>
+            </div>
+            
+            <div class='custom-popup' id="map"></div>
+
+    
+</div>
+<script src="map.js"></script>
+    <script src="app.js"></script>
+    
+    
+</body>
+</html>
