@@ -48,5 +48,19 @@ loadJson(pysNimi, luoPysakit);
             });
         });
 
+        
+var options = {
+    url: "/stations.json",
+    getValue: "stationName",
+    dataType: "json",
+    theme: "dark",
+    list: {
+      match: {
+        enabled: true
+      }
+    }
+  };
+  $("#autocomplete").easyAutocomplete(options);
+
 
     
