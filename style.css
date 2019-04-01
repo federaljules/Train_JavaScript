@@ -8,8 +8,36 @@ li, p{
 
 }
 
-h3{
+.otsikko{
   color: whitesmoke;
+}
+
+h3, p{
+  color: black;
+}
+
+#wrap{
+  display: grid;
+  grid-template-columns: 20% 80%;
+  height:100vh;
+}
+
+
+
+#traincont{
+  overflow: auto;
+  padding-left: 7%;
+  padding-right: 7%;
+  padding-top: 7%;
+  height:auto;
+  background-color: #5c5c5c;
+  max-height:100%;
+ 
+
+}
+
+#traincont h3, p{
+ color: whitesmoke;
 }
 
 .btn{
@@ -19,6 +47,46 @@ h3{
 ul{
     padding: 0;
 }
+
+#info::-webkit-scrollbar {
+  width: 8px;
+  background-color: #858585;
+  border-radius: 10px;
+  
+} 
+
+#info:hover::-webkit-scrollbar {
+  width: 10px;
+  background-color: #858585;
+  border-radius: 10px;
+} 
+
+#info::-webkit-scrollbar-thumb {
+  background-color: #cc3c3c;
+  border-radius: 10px;
+  
+}
+
+
+
+#traincont::-webkit-scrollbar {
+  width: 8px;
+  background-color: #858585;
+  border-radius: 10px;
+} 
+
+#traincont:hover::-webkit-scrollbar {
+  width: 10px;
+  background-color: #858585;
+  border-radius: 10px;
+} 
+
+#traincont::-webkit-scrollbar-thumb {
+  background-color: #cc3c3c;
+  border-radius: 10px;
+}
+
+
 
 #info{
   padding-left: 7%;
@@ -43,6 +111,7 @@ ul{
        * element that contains the map. */
        #map {
         height: 100%;
+        
       }
       /* Optional: Makes the sample page fill the window. */
       html, body {

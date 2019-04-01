@@ -1,4 +1,4 @@
-var mymap = L.map('map').setView([59.880, 25.09], 9);
+var mymap = L.map('map').setView([60.50, 25.09], 9);
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibXV1c3NzYXJpIiwiYSI6ImNqc2Z5c2lpeDAxNmo0NWtncWZ3bGl4bWMifQ.lCetD4yz2m5QTsoXBdj5mg', {
     maxZoom: 18,
@@ -16,6 +16,11 @@ var pinIcon = L.icon({
     popupAnchor:  [0, -32] 
 });
 
+
+
+
+
+
 function loadJson(url, cfunc){
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
@@ -28,9 +33,21 @@ function loadJson(url, cfunc){
     
     }
 
-    let pysNimi = 'https://rata.digitraffic.fi/api/v1/metadata/stations';
-    let junat = 'https://rata.digitraffic.fi/api/v1/trains/';
+    var pysNimi = 'https://rata.digitraffic.fi/api/v1/metadata/stations';
+    let junat = 'https://rata.digitraffic.fi/api/v1/trains/2019-03-29';
 
+    
+    var options = {
+        url: "stations.json",
+        getValue: "stationName",
+        theme: "dark",
+        list: {
+            match: {
+                enabled: true
+            }
+        }
+    };
+$("#autocomplete").easyAutocomplete(options);
     
 
     function haeAika(){
@@ -51,21 +68,43 @@ function loadJson(url, cfunc){
 
 haeAika();
 
-
-
-
 loadJson(pysNimi, showStations);
 
 let names = [];
 function showStations(data) {
     $.each(data, function(index, station) {
+       
         var marker;
+        if(station.type == "STATION"){
         names.push(station.stationName);
         marker = L.marker([station.latitude, station.longitude], {icon: pinIcon}).addTo(mymap);
         let s = station.stationShortCode;
         let code = "'" + s + "'";
         code = code.replace(/\s/g,'');
-        marker.bindPopup('<h3>'+station.stationName +'</h3><p>' +station.type + '</p><p>Osoite:'+station.stationUICCode +'<br>Käytössä:'+ station.stationUICCode+'<br>Tunnus:' +station.stationUICCode+'<br>'+'<button onclick="findStation('+code+')">'+'Katso junat' + '</button>');
-        
+        marker.bindPopup('<h3>'+station.stationName +'</h3><p>' +station.type + '</p><p>Osoite:'+station.stationUICCode +'<br>Käytössä:'+ station.stationUICCode+'<br>Tunnus:' +station.stationUICCode+'<br>'+'<button onclick="etsiJuna()">'+'Katso junat' + '</button>');
+    }
     });
+
+
 }
+
+loadJson(junat, etsiJuna);
+function etsiJuna(data){
+  
+    var divi = document.getElementById("traincont");
+        divi.style.display = 'block';
+    for(var i = 0; i< data.length; i++){
+        for(var j=0; j < data[i].timeTableRows.length; j++){
+        if(data[i].timeTableRows[j].stationShortCode == "HKI" && data[i].timeTableRows[j].commercialStop == true && data[i].commuterLineID != "" && data[i].runningCurrently == true)
+        divi.innerHTML +=
+   "<h3> Train line: <span style='color:#ff4747'>" + data[i].commuterLineID + "</span></h3>" + " <p>Scheduled departure time from Helsinki: <span style='color:#ff4747'>" + data[i].timeTableRows[j].scheduledTime + "</span></p>";
+}
+}
+}
+
+
+
+
+
+
+

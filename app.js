@@ -38,18 +38,6 @@ loadJson(pysNimi, luoPysakit);
 //         document.getElementById('statList').innerHTML = output;
 //         });
 
-    var pysInfo = $.getJSON("https://rata.digitraffic.fi/api/v1/trains", function (data){
-
-        // console.log(data);
-
-        for(var i = 0; i<data.length;i++){   
-            // console.log(data[i].timeTableRows)
-            for(var j=0; j < data.length; j++ ){
-                // console.log(data[i].timeTableRows[j].scheduledTime)
-            }
-           
-        
-    }});
 
 
  
@@ -61,15 +49,4 @@ loadJson(pysNimi, luoPysakit);
         });
 
 
-        var options = {
-            url: names,
-            getValue: "stationName",
-            theme: "dark",
-            list: {
-                match: {
-                    enabled: true
-                }
-            }
-        };
-
-        $("#autocomplete").easyAutocomplete(options);
+    
