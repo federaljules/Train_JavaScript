@@ -18,9 +18,6 @@ var pinIcon = L.icon({
 
 
 
-
-
-
 function loadJson(url, cfunc){
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
@@ -33,9 +30,32 @@ function loadJson(url, cfunc){
     
     }
 
-    var pysNimi = 'https://rata.digitraffic.fi/api/v1/metadata/stations';
-    let junat = 'https://rata.digitraffic.fi/api/v1/trains/2019-03-29';
+    var station = "stations.json";
+    
+    function loadGetInput(){
+        loadJson(station, getInput);
+    }
+function getInput(data){
+    let inputVal = document.getElementById('autocomplete').value;
+    for(i=0; i<data.length; i++){
+    if(inputVal == data[i].stationName){
+       
+        console.log(data[i].longitude + " " + " " + data[i].latitude);
+        console.log(data[i].stationName);
+    }
+}
 
+
+
+
+}
+
+    var pysNimi = 'https://rata.digitraffic.fi/api/v1/metadata/stations';
+    let junat = 'https://rata.digitraffic.fi/api/v1/live-trains/station/';
+    let url = new URL(junat);
+    url.search += "?arrived_trains=0&arriving_trains=150&departed_trains=0&departing_trains=150&include_nonstopping=false";
+
+    console.log(url)
     
     var options = {
         url: "stations.json",
@@ -66,6 +86,7 @@ $("#autocomplete").easyAutocomplete(options);
 }
 }
 
+
 haeAika();
 
 loadJson(pysNimi, showStations);
@@ -81,23 +102,34 @@ function showStations(data) {
         let s = station.stationShortCode;
         let code = "'" + s + "'";
         code = code.replace(/\s/g,'');
-        marker.bindPopup('<h3>'+station.stationName +'</h3><p>' +station.type + '</p><p>Osoite:'+station.stationUICCode +'<br>Käytössä:'+ station.stationUICCode+'<br>Tunnus:' +station.stationUICCode+'<br>'+'<button onclick="etsiJuna()">'+'Katso junat' + '</button>');
+        marker.bindPopup('<h3>'+station.stationName +'</h3><p>' +station.type + '</p><p>Osoite:'+station.stationUICCode +'<br>Käytössä:'+ station.stationUICCode+'<br>Tunnus:' +station.stationUICCode+'<br>'+'<button onclick="createUrlEtsiJuna('+code+')">'+'Katso junat' + '</button>');
     }
     });
 
 
 }
 
-loadJson(junat, etsiJuna);
+function createUrlEtsiJuna(code){
+
+    let urlEtsiJuna =new URL("https://rata.digitraffic.fi/api/v1/live-trains/station/");
+    urlEtsiJuna.pathname += code;
+    urlEtsiJuna.search += "?arrived_trains=0&arriving_trains=150&departed_trains=0&departing_trains=150&include_nonstopping=false"
+    loadJson(urlEtsiJuna, etsiJuna);
+
+}
+
 function etsiJuna(data){
-  
+
+
+
     var divi = document.getElementById("traincont");
         divi.style.display = 'block';
+    divi.innerHTML = "";
     for(var i = 0; i< data.length; i++){
         for(var j=0; j < data[i].timeTableRows.length; j++){
-        if(data[i].timeTableRows[j].stationShortCode == "HKI" && data[i].timeTableRows[j].commercialStop == true && data[i].commuterLineID != "" && data[i].runningCurrently == true)
+        if(data[i].timeTableRows[j].stationShortCode == "HKI" && data[i].timeTableRows[j].commercialStop == true && data[i].commuterLineID != "")
         divi.innerHTML +=
-   "<h3> Train line: <span style='color:#ff4747'>" + data[i].commuterLineID + "</span></h3>" + " <p>Scheduled departure time from Helsinki: <span style='color:#ff4747'>" + data[i].timeTableRows[j].scheduledTime + "</span></p>";
+   "<h3> Train line: <span style='color:#ff4747'>" + data[i].commuterLineID + "</span></h3>" + " <p>Scheduled departure time from Helsinki: <span style='color:#ff4747'>" + data[i].timeTableRows[j].scheduledTime.substr(11,5) + "</span></p>";
 }
 }
 }
