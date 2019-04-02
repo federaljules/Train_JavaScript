@@ -20,11 +20,9 @@ var pinIcon = L.icon({
 });
 
 
-// if (!Array.prototype.last){
-//     Array.prototype.last = function(){
-//         return this[this.length - 1];
-//     };
-// };
+function showTrainData(){
+    
+}
 
 function loadJson(url, cfunc) {
   var xhr = new XMLHttpRequest();
@@ -55,22 +53,46 @@ function getInput(data) {
 var pysNimi = "https://rata.digitraffic.fi/api/v1/metadata/stations/";
 
 
-
+setInterval(haeAika, 5000)
 function haeAika() {
-  var m;
+    
+var infoDiv = document.getElementById('time');
   var d = new Date();
   var da = d.getDate();
   var mo = d.getMonth() + 1;
   var ye = d.getFullYear();
-
-  if (mo <= 9) {
-    m = "0" + mo.toString();
-    console.log(ye + "-" + m + "-" + da);
-  } else {
-    console.log(ye + "-" + mo + "-" + da);
+  var min = d.getMinutes();
+  var hour = d.getHours();
+  if(mo <= 9){
+    var m = "0" + mo.toString()
+  }else{
+      m=mo.toString();
   }
+  if(da <= 9){
+    var day = "0" + da.toString()
+  }else{
+      day=da.toString();
+  }
+  if(min <= 9){
+    var minu = "0" + min.toString()
+  }else{
+      minu=min.toString();
+  }
+  if(hour<= 9){
+    var hr = "0" + hour.toString()
+  }else{
+      hr=hour.toString();
+  }
+  let timeToHtml = infoDiv.innerHTML = day + " / " + m + " / "+ ye+ "<br> Kello: " + hr + ":" + minu +"<br><button class='btn btn-outline-light' id='timebtn' >"+"Piilota aika" + "</button>";
+return timeToHtml;
+  
+
+    
+    console.log("time update");
 }
+
 haeAika();
+
 
 loadJson(pysNimi, showStations);
 
@@ -90,7 +112,7 @@ function showStations(data) {
         "<h3>" +
           station.stationName +
           "</h3>" +
-          '<button class="btn btn-outline-dark btn-block" onclick="createUrlEtsiJuna(' +
+          '<button id="showTrainData" class="btn btn-outline-dark btn-block" onclick="createUrlEtsiJuna(' +
           code +
           ')">' +
           "Katso junat" +
@@ -99,6 +121,7 @@ function showStations(data) {
     }
   });
 }
+
 
 function createUrlEtsiJuna(code) {
   let urlEtsiJuna = new URL(
@@ -110,29 +133,32 @@ function createUrlEtsiJuna(code) {
   loadJson(urlEtsiJuna, etsiJuna);
   console.log(urlEtsiJuna);
 }
+
+
 console.log(loadJson(urlEtsiJuna, etsiJuna));
 function etsiJuna(data) {
-  var divi = document.getElementById("traincont");
+var wrap = document.getElementById('wrap');
+var trainData = document.getElementById('traincont');
+var divi = document.getElementById("traincont");
+wrap.style.gridTemplateColumns = "20% 80%";
   divi.style.display = "block";
   divi.innerHTML = "";
   for (var i = 0; i < data.length; i++) {
-    if (
-      data[i].trainCategory == "Commuter" &&
-      data[i].operatorShortCode == "vr" &&
-      data[i].trainType == "HL"
-    ) {
-      console.log(data[i].commuterLineID);
-      divi.innerHTML +=
-        "<h3> Train line: <span style='color:#ff4747'>" +
-        data[i].commuterLineID +
-        "</span></h3>" 
-    for (var j = 0; j < data[i]; j++) {
-      divi.innerHTML +=
-          " <p>Scheduled departure time: <span style='color:#ff4747'>" +
-          data[i].timeTableRows[j].scheduledTime.substr(11, 5) +
-          "</span></p>";
-      
-      }
+    var lineId =  data[i].commuterLineID
+    for (var j = 0; j < data[i].timeTableRows.length; j++) {
+        var time = data[i].timeTableRows[j].scheduledTime.substr(11, 5); 
     }
+    if (
+        data[i].trainCategory == "Commuter" &&
+        data[i].operatorShortCode == "vr" &&
+        data[i].trainType == "HL"
+      ) {
+        console.log(data[i].commuterLineID);
+        divi.innerHTML +=
+          "<h3> Train line: <span style='color:#ff4747'>" +
+           lineId +
+          "</span></h3>" + " <p>Scheduled departure time: <span style='color:#ff4747'>" + time  + "</span></p>";
+    
+  }
   }
 }
