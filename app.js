@@ -13,7 +13,7 @@ loadJson(pysNimi, luoPysakit);
 
     var output = "";
     for(var i=0; i<data.length; i++){
-        if(data[i].passengerTraffic == true)
+        if(data[i].passengerTraffic == true && data[i].type == "STATION")
         output += '<li>'+data[i].stationName+'</li>';
  //  console.log(data[i].stationName)
    }
@@ -42,8 +42,9 @@ loadJson(pysNimi, luoPysakit);
 
  
         $(document).ready(function() {
-            $(".hideList").click(function () {
-            $("#statList").toggle("fast",function(){
+            $("#statList").hide(function () {
+            $(".hideList").click(function(){
+              $("#statList").toggle("fast");
             });
             });
         });
@@ -74,7 +75,7 @@ loadJson(pysNimi, luoPysakit);
                 console.log("done");
                 $.each(data, function(index, station) {
                     if(station.type == "STATION" && station.passengerTraffic == true){
-                        console.log(station.stationName);
+                        
                         options.data.push(station.stationName);
                     }
                 });

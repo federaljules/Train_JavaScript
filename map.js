@@ -1,9 +1,10 @@
-var mymap = L.map("map").setView([60.5, 25.09], 9);
+var mymap = L.map("map").setView([60.5, 25.09], 9,)
 
 L.tileLayer(
   "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibXV1c3NzYXJpIiwiYSI6ImNqc2Z5c2lpeDAxNmo0NWtncWZ3bGl4bWMifQ.lCetD4yz2m5QTsoXBdj5mg",
   {
-    maxZoom: 18,
+    maxZoom: 16,
+    minZoom: 7,
     attribution:
       'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
       '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
@@ -44,13 +45,11 @@ function getInput(data) {
   for (var i = 0; i < data.length; i++) {
     if (inputVal == data[i].stationName) {
       mymap.setView([data[i].latitude, data[i].longitude], 13);
-      console.log(data[i].longitude + " " + " " + data[i].latitude);
-      console.log(data[i].stationName);
     }
   }
 }
 
-var pysNimi = "https://rata.digitraffic.fi/api/v1/metadata/stations/";
+var pysNimi = "stations.json";
 
 
 setInterval(haeAika, 5000)
@@ -88,7 +87,7 @@ return timeToHtml;
   
 
     
-    console.log("time update");
+
 }
 
 haeAika();
@@ -129,36 +128,65 @@ function createUrlEtsiJuna(code) {
   );
   urlEtsiJuna.pathname += code;
   urlEtsiJuna.search +=
-    "?minutes_before_departure=60&minutes_after_departure=0&minutes_before_arrival=0&minutes_after_arrival=0&include_nonstopping=false";
+    "?minutes_before_departure=15&minutes_after_departure=0&minutes_before_arrival=0&minutes_after_arrival=0&include_nonstopping=false";
   loadJson(urlEtsiJuna, etsiJuna);
-  console.log(urlEtsiJuna);
 }
 
 
-console.log(loadJson(urlEtsiJuna, etsiJuna));
+
+
 function etsiJuna(data) {
 var wrap = document.getElementById('wrap');
 var trainData = document.getElementById('traincont');
 var divi = document.getElementById("traincont");
 wrap.style.gridTemplateColumns = "20% 80%";
-  divi.style.display = "block";
-  divi.innerHTML = "";
+divi.style.display = "block";
+divi.innerHTML = "<h3 style='color:#ff4747; font-size:20pt;'>Tunnin sisällä lähtevät junat valitsemaltasi pysäkiltä:</h3><br>";
+
+
   for (var i = 0; i < data.length; i++) {
     var lineId =  data[i].commuterLineID
-    for (var j = 0; j < data[i].timeTableRows.length; j++) {
-        var time = data[i].timeTableRows[j].scheduledTime.substr(11, 5); 
-    }
-    if (
-        data[i].trainCategory == "Commuter" &&
-        data[i].operatorShortCode == "vr" &&
-        data[i].trainType == "HL"
-      ) {
-        console.log(data[i].commuterLineID);
-        divi.innerHTML +=
-          "<h3> Train line: <span style='color:#ff4747'>" +
-           lineId +
-          "</span></h3>" + " <p>Scheduled departure time: <span style='color:#ff4747'>" + time  + "</span></p>";
+    var trainNum = data[i].trainNumber
+    var trainType = data[i].trainType
+    var lastStop = data[i].timeTableRows[data[i].timeTableRows.length-1].stationShortCode;
+    var firstStop = data[i].timeTableRows[0].stationShortCode
     
+    
+    if(data[i].commuterLineID != "" && data[i].trainCategory == "Commuter"){
+
+      for (var j = 0; j < data[i].timeTableRows.length; j++) {
+          var time = data[i].timeTableRows[j].scheduledTime.substr(11, 5);
+          var lateMin =  data[i].timeTableRows[j].differenceInMinutes
+          var depart = data[i].timeTableRows[j].type
+      }
+
+    if(data[i].trainCategory == "Commuter" && data[i].operatorShortCode == "vr" && trainType == "HL") {
+       
+        
+        divi.innerHTML +=
+          "<h3> Lähijuna:  <span style='color:#ff4747; font-size:20pt; font-weight:bold;'>" +
+           lineId +
+          "</span><br> Paikasta: <span style='color:#ff4747; font-size:20pt; font-weight:bold;'>"+ firstStop +"</span> paikkaan: <span style='color:#ff4747; font-size:20pt; font-weight:bold;'>"+ lastStop +"</span></h3>" + " <p>Aikataulun mukainen lähtöaika valitsemaltasi asemalta: <span style='color:#ff4747; font-size:20pt;'>"+ " " + time  +  "</span>";
+    } 
+    else {
+      divi.innerHTML +=
+          "<h3> Lähijuna:  <span style='color:#ff4747; font-size:20pt;'>" +
+           lineId +
+          "</span></h3>" + " <p>Aikataulun mukainen lähtöaika: <span style='color:#ff4747; font-size:20pt;'>" + time  +  "</span>Myöhässä: "+ lateMin +"</p></p>";
+    }
+ 
+  
+  }else if(data[i].trainCategory == "Long-distance"){
+   
+      divi.innerHTML += "<h3 style='style='color:#ff4747; font-size:20pt;'>"+ trainType+ " juna " + trainNum + " "+ "<h3>Paikasta: "+ firstStop +" paikkaan: "+ lastStop + "</h3> <br>" + time + "</p>"
+   
+  }else if(data[i].trainCategory == "Shunting"){
+    divi.innerHTML += "<h3>Tältä pysäkiltä ei kulje junia tähän aikaan</h3>"
   }
-  }
-}
+  
+
+  
+  
+  } // eka looppi loppuu
+  } //funktio etsiJuna loppuu
+ 
