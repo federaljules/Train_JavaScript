@@ -83,7 +83,7 @@ var infoDiv = document.getElementById('time');
   }else{
       hr=hour.toString();
   }
-  let timeToHtml = infoDiv.innerHTML = day + " / " + m + " / "+ ye+ "<br> Kello: " + hr + ":" + minu +"<br><button class='btn btn-outline-light' id='timebtn' >"+"Piilota aika" + "</button>";
+  let timeToHtml = infoDiv.innerHTML = day + " / " + m + " / "+ ye+ "<br> Kello: " + hr + ":" + minu;
 return timeToHtml;
   
 

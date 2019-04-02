@@ -27,11 +27,13 @@
         
             
             <div id="info"><br>
-                <p id="time"></p>
+                <span id="time"></span><br>
+                <button class='btn btn-outline-light' id='timebtn' style='font-size: 10pt; padding: .3;' >Aika</button>
+                <br><br>
                 <h3 class="otsikko">JUNAPYSÄKKIEN TIEDOT</h3><br>
-                <input type="text" placeholder="Etsi pysäkkiä" id="autocomplete"><br>
-                <button type="button" class="btn btn-outline-light" onclick='loadGetInput()'>Etsi</button>
-                <button type="button" class="hideList btn btn-outline-light">Piilota kaikki pysäkit</button>
+                <input type="text" placeholder="Etsi pysäkkiä" id="autocomplete" class="form-control"><br>
+                <button type="button" class="btn btn-success btn-block" onclick='loadGetInput()'>Etsi</button>
+                <button type="button" class="hideList btn btn-outline-light btn-block">Pysäkit</button>
                 <br><br>
                 <!-- <p class="hideList">Pysäkit: </p> -->
                 <ul id="statList"></ul>
