@@ -67,6 +67,16 @@ ul{
   
 }
 
+ .card-body{
+  background-color: #303030;
+  border-radius: 20px;
+}
+
+.card{
+  border-radius: 20px!important;
+  border-color: #cc3c3c;
+  margin-bottom: 3%;
+}
 
 
 #traincont::-webkit-scrollbar {

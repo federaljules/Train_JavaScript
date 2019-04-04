@@ -84,13 +84,24 @@ var infoDiv = document.getElementById('time');
   }
   let timeToHtml = infoDiv.innerHTML = day + " / " + m + " / "+ ye+ "<br> Kello: " + hr + ":" + minu;
 return timeToHtml;
-  
+}
+haeAika();
 
-    
-
+function printLocalTime(dateString){                                             // ottaa merkkijonon muotoa UTCDateString (YYYY-MM-DDTHH:mm:ss.sssZ)
+  var dat = stringToDate(dateString);                                          // tekee siitä Date-objektin
+  var d = new Date(dat.getTime()-dat.getTimezoneOffset()*60*1000);             // muuttaa universaalin UTC ts. ZULU - ajan Suomiajaksi
+  return d.toTimeString().slice(0,8);                                          // leikkaa tarpeettoman pois
 }
 
-haeAika();
+function stringToDate(s){                                                        // muuttaa merkkijonon YYYY-MM-DDTHH:mm:ss.sssZ Date-objektiksi
+  var year = s.slice(0,4);                                                     // substring, jok kattaa vuodet
+  var month = s.slice(5,7);                                                    // substring, jok kattaa kuukaudet
+  var day = s.slice(8,10);                                                     // substring, jok kattaa päivät
+  var hour = s.slice(11,13);                                                   // substring, jok kattaa tunnit
+  var min = s.slice(14,16);                                                    // substring, jok kattaa minuutit
+  var sec =s.slice(17,19);                                                     // substring, jok kattaa sekunnit
+  return new Date(year,month,day,hour,min,sec,0);                              // jätetään millisekunnit huomiotta
+}
 
 
 loadJson(pysNimi, showStations);
@@ -128,7 +139,7 @@ function createUrlEtsiJuna(code) {
   );
   urlEtsiJuna.pathname += code;
   urlEtsiJuna.search +=
-    "?minutes_before_departure=15&minutes_after_departure=0&minutes_before_arrival=0&minutes_after_arrival=0&include_nonstopping=false";
+    "?minutes_before_departure=60&minutes_after_departure=0&minutes_before_arrival=0&minutes_after_arrival=0&include_nonstopping=false";
   loadJson(urlEtsiJuna, etsiJuna);
 }
 
@@ -152,36 +163,47 @@ divi.innerHTML = "<h3 style='color:#ff4747; font-size:20pt;'>Tunnin sisällä l�
     var firstStop = data[i].timeTableRows[0].stationShortCode
     
     
-    if(data[i].commuterLineID != "" && data[i].trainCategory == "Commuter"){
+    if(data[i].operatorShortCode == "vr"){
 
       for (var j = 0; j < data[i].timeTableRows.length; j++) {
-          var time = data[i].timeTableRows[j].scheduledTime.substr(11, 5);
+          var time = data[i].timeTableRows[j].scheduledTime
           var lateMin =  data[i].timeTableRows[j].differenceInMinutes
           var depart = data[i].timeTableRows[j].type
+          var track = data[i].timeTableRows[j].commercialTrack
       }
 
     if(data[i].trainCategory == "Commuter" && data[i].operatorShortCode == "vr" && trainType == "HL") {
        
         
         divi.innerHTML +=
+        "<div class='card'><div class='card-body'>" +
           "<h3> Lähijuna:  <span style='color:#ff4747; font-size:20pt; font-weight:bold;'>" +
            lineId +
-          "</span><br> Paikasta: <span style='color:#ff4747; font-size:20pt; font-weight:bold;'>"+ firstStop +"</span> paikkaan: <span style='color:#ff4747; font-size:20pt; font-weight:bold;'>"+ lastStop +"</span></h3>" + " <p>Aikataulun mukainen lähtöaika valitsemaltasi asemalta: <span style='color:#ff4747; font-size:20pt;'>"+ " " + time  +  "</span>";
-    } 
+          "</span><br> Paikasta: <span style='color:#ff4747; font-size:20pt; font-weight:bold;'>"+ firstStop +"</span> <br>Paikkaan: <span style='color:#ff4747; font-size:20pt; font-weight:bold;'>"+ lastStop +"</span><br> Raiteelta: "+ track +"</h3>" + " <p>Aikataulun mukainen lähtöaika valitsemaltasi asemalta: <span style='color:#ff4747; font-size:20pt;'>"+ " " +  printLocalTime(time) +  "</span>";
+          +"</div></div>"
+        } 
+    else if(data[i].trainCategory == "Long-distance"){
+   
+      divi.innerHTML += 
+      "<div class='card'><div class='card-body'>" +
+      "<h3 style='style='color:#ff4747; font-size:20pt;'>"+ trainType+ " juna " + trainNum + " "+ "<br> Paikasta: <span style='color:#ff4747; font-size:20pt; font-weight:bold;'>"+ firstStop +"</span> <br>Paikkaan: <span style='color:#ff4747; font-size:20pt; font-weight:bold;'>"+ lastStop +"</span><br> Raiteelta: "+ track +"</h3>"+"<p>Aikataulun mukainen lähtöaika valitsemaltasi asemalta: <span style='color:#ff4747; font-size:20pt;'>" + printLocalTime(time) + "</span>"
+      +"</div></div>"
+    }
+    else if(lateMin != 0){
+      console.log(data[i]);
+      "<div class='card'><div class='card-body'>" +
+      "<h3> Lähijuna:  <span style='color:#ff4747; font-size:20pt; font-weight:bold;'>" +
+       lineId +
+      "</span><br> Paikasta: <span style='color:#ff4747; font-size:20pt; font-weight:bold;'>"+ firstStop +"</span> <br>Paikkaan: <span style='color:#ff4747; font-size:20pt; font-weight:bold;'>"+ lastStop +"</span><br> Raiteelta: "+ track +"</h3>" + " <p>Aikataulun mukainen lähtöaika valitsemaltasi asemalta: <span style='color:#ff4747; font-size:20pt;'>"+ " " +  printLocalTime(time) +  "</span><span><br>Myöhässä: "+lateMin+" </span>";
+      +"</div></div>"
+
+    }
     else {
       divi.innerHTML +=
-          "<h3> Lähijuna:  <span style='color:#ff4747; font-size:20pt;'>" +
-           lineId +
-          "</span></h3>" + " <p>Aikataulun mukainen lähtöaika: <span style='color:#ff4747; font-size:20pt;'>" + time  +  "</span>Myöhässä: "+ lateMin +"</p></p>";
+          console.log("Shunting")
     }
- 
-  
-  }else if(data[i].trainCategory == "Long-distance"){
-   
-      divi.innerHTML += "<h3 style='style='color:#ff4747; font-size:20pt;'>"+ trainType+ " juna " + trainNum + " "+ "<h3>Paikasta: "+ firstStop +" paikkaan: "+ lastStop + "</h3> <br>" + time + "</p>"
-   
-  }else if(data[i].trainCategory == "Shunting"){
-    divi.innerHTML += "<h3>Tältä pysäkiltä ei kulje junia tähän aikaan</h3>"
+  }else{
+    console.log("No trains running")
   }
   
 
