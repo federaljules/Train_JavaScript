@@ -5,9 +5,9 @@ $(document).ready(function () {
   });
 });
 
-loadJson(pysNimi, luoPysakit);      //Ajax kutsu joka hakee pysäkkien tiedot
+loadJson(stopName, createStops);      //Ajax kutsu joka hakee pysäkkien tiedot
 
-function luoPysakit(data) {       
+function createStops(data) {       
   var divi = document.getElementById('info');         //Funktio joka tuo pysäkit listaan infodivin sisälle
   var para = document.getElementsByTagName('li');
   // console.log(data);

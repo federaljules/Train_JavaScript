@@ -33,7 +33,7 @@ function loadJson(url, func) {
 
 
 function loadGetInput() {
-  loadJson(pysNimi, getInput);      //Ajax kutsu hakee pysäkit
+  loadJson(stopName, getInput);      //Ajax kutsu hakee pysäkit
 }
 function getInput(data) {
   let inputVal = document.getElementById("autocomplete").value;       //Kun käyttäjä hakee hakukentästä pysäkin ja painaa etsi nappulaa mappi zoomaa kyseisen pysäkin lokaatioon
@@ -44,11 +44,11 @@ function getInput(data) {
   }
 }
 
-var pysNimi = "stations.json";        //Pysäkit on tallennettu stations.json tiedostoon helpottaakseen hakua, nämä tallennetaan pysNimi variableen
+var stopName = "stations.json";        //Pysäkit on tallennettu stations.json tiedostoon helpottaakseen hakua, nämä tallennetaan stopName variableen
 
 
-setInterval(haeAika, 5000)      //Määritetään kuinka usein päivämäärä ja aika päivitetään sivulla
-function haeAika() {            //Funktio hakee ajan käyttäen Date metodia luo aika stringin
+setInterval(getTime, 5000)      //Määritetään kuinka usein päivämäärä ja aika päivitetään sivulla
+function getTime() {            //Funktio hakee ajan käyttäen Date metodia luo aika stringin
     
 var infoDiv = document.getElementById('time');
   var d = new Date();
@@ -80,7 +80,7 @@ var infoDiv = document.getElementById('time');
   let timeToHtml = infoDiv.innerHTML = day + " / " + m + " / "+ ye+ "<br> Kello: " + hr + ":" + minu;      //Luodaan aika elementti sivustolle ja yhdistetään saadut arvot
 return timeToHtml;
 }
-haeAika();    //Aktivoidaan ajan haku funktio
+getTime();    //Aktivoidaan ajan haku funktio
 
 function lclTime(date){                                             
   var dat = toDt(date);                                          
@@ -99,7 +99,7 @@ function toDt(s){       //Funktiolla leikataan ylimääräinen saadusta ajasta p
 }
 
 
-loadJson(pysNimi, showStations);      //Ajax kutsu pysäkeille jotka parsetaan showStations funktioon
+loadJson(stopName, showStations);      //Ajax kutsu pysäkeille jotka parsetaan showStations funktioon
 
 let names = [];
 function showStations(data) {                                                    //Funktiossa haetaan pysäkit ja otetaan niiden nimi, latitude ja longitude
@@ -117,7 +117,7 @@ function showStations(data) {                                                   
         "<h3>" +
           station.stationName +
           "</h3>" +
-          '<button id="showTrainData" class="btn btn-outline-dark btn-block" onclick="createUrlEtsiJuna(' +
+          '<button id="showTrainData" class="btn btn-outline-dark btn-block" onclick="createUrlGetTrain(' +
           code +
           ')">' +
           "Katso junat" +
@@ -128,17 +128,17 @@ function showStations(data) {                                                   
 }
 
 
-function createUrlEtsiJuna(code) {    //Funktio jossa luodaan oikea url livejunien tiedoille ja käytetään code variablesta saatavaa stationShortCodea saamaan oikean pysäkin tiedot.
+function createUrlGetTrain(code) {    //Funktio jossa luodaan oikea url livejunien tiedoille ja käytetään code variablesta saatavaa stationShortCodea saamaan oikean pysäkin tiedot.
   let urlEtsiJuna = new URL(
     "https://rata.digitraffic.fi/api/v1/live-trains/station/"
   );
   urlEtsiJuna.pathname += code;                        //Lisätään pysäkin shortcode urliin
   urlEtsiJuna.search +=
     "?minutes_before_departure=60&minutes_after_departure=0&minutes_before_arrival=0&minutes_after_arrival=0&include_nonstopping=false"; // Lisätään loppu osoite ajax kutsua varten
-  loadJson(urlEtsiJuna, etsiJuna);      //Kutsutaan ajax funktiolla ja ohjataan data etsiJuna funktioon
+  loadJson(urlEtsiJuna, getTrain);      //Kutsutaan ajax funktiolla ja ohjataan data getTrain funktioon
 }
 
-function etsiJuna(data) {                                     // etsiJuna funktio luo kaiken datan kun painetaan marker popupissa olevaa nappia
+function getTrain(data) {                                     // getTrain funktio luo kaiken datan kun painetaan marker popupissa olevaa nappia
 var wrap = document.getElementById('wrap');                   //Haetaan wrap div
 var divi = document.getElementById("traincont");              //Haetaan traincont div
 wrap.style.gridTemplateColumns = "20% 80%";                   //kun funktio aktivoituu määritetään wrapin grid jakautumaan sadasta prosentista 20% ja 80%
@@ -181,5 +181,5 @@ divi.innerHTML = "<h3 style='color:#ff4747; font-size:20pt;'>Lähiaikoina lähte
     
   
   } // eka looppi loppuu
-  } //funktio etsiJuna loppuu
+  } //funktio getTrain loppuu
   
